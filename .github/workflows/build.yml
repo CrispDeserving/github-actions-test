@@ -9,7 +9,7 @@ jobs:
     permissions:
       contents: write
     env:
-      VERSION_STRING: ${{ github.event.releases.tag_name }}
+      VERSION_STRING: ${{ github.ref_name }}
       REPO_URL: github.com/CrispDeserving/github-actions-test
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +27,7 @@ jobs:
           GOOS="linux" GOARCH="amd64" \
             go build -v -o "dihdah-${GOOS}_${GOARCH}" \
             -ldflags="-X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
-            ./...
+            .
       - name: Build For MacOS
         run: |
           GOOS="darwin" GOARCH="amd64" \
