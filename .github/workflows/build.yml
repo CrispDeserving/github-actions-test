@@ -48,7 +48,7 @@ jobs:
           go build -o "dihdah-${GOOS}_${GOARCH}.exe" \
           -ldflags="-s -X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
           .
-          chmod +x "dihdah-${GOOS}_${GOARCH}"
+          chmod +x "dihdah-${GOOS}_${GOARCH}.exe"
       - name: Release to Github
         uses: softprops/action-gh-release@v2
         with:
