@@ -1,4 +1,4 @@
-name: Go
+name: Build binaries and release
 on:
   push:
     tags:
@@ -10,6 +10,7 @@ jobs:
       contents: write
     env:
       VERSION_STRING: ${{ github.event.releases.tag_name }}
+      REPO_URL: github.com/CrispDeserving/github-actions-test
     steps:
       - uses: actions/checkout@v4
       - name: Set up Go
@@ -23,21 +24,21 @@ jobs:
           go mod tidy
       - name: Build For Linux
         run: |
-          GOARCH="amd64" GOOS="linux" \
+          GOOS="linux" GOARCH="amd64" \
             go build -v -o "dihdah-${GOOS}_${GOARCH}" \
-            -ldflags="-X github.com/CrispDeserving/github-actions-test/cmd.versionString=${VERSION_STRING}" \
-            .
-      - name: Build For Macos
+            -ldflags="-X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
+            ./...
+      - name: Build For MacOS
         run: |
-          GOARCH="amd64" GOOS="darwin" \
+          GOOS="darwin" GOARCH="amd64" \
             go build -v -o "dihdah-${GOOS}_${GOARCH}" \
-            -ldflags="-X github.com/CrispDeserving/github-actions-test/cmd.versionString=${VERSION_STRING}" \
+            -ldflags="-X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
             .
       - name: Build For Windows
         run: |
-          GOARCH="amd64" GOOS="windows" \
+          GOOS="windows" GOARCH="amd64" \
             go build -v -o "dihdah-${GOOS}_${GOARCH}.exe" \
-            -ldflags="-X github.com/CrispDeserving/github-actions-test/cmd.versionString=${VERSION_STRING}" \
+            -ldflags="-X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
             .
       - name: Release to Github
         uses: softprops/action-gh-release@v2
