@@ -23,23 +23,29 @@ jobs:
           go get -u .
           go mod tidy
       - name: Build For Linux
+        env:
+          GOOS: linux
+          GOARCH: amd64
         run: |
-          GOOS="linux" GOARCH="amd64" \
-            go build -v -o "dihdah-${GOOS}_${GOARCH}" \
-            -ldflags="-X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
-            .
+          go build -o "dihdah-${GOOS}_${GOARCH}" \
+          -ldflags="-X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
+          .
       - name: Build For MacOS
+        env:
+          GOOS: darwin
+          GOARCH: amd64
         run: |
-          GOOS="darwin" GOARCH="amd64" \
-            go build -v -o "dihdah-${GOOS}_${GOARCH}" \
-            -ldflags="-X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
-            .
+          go build -o "dihdah-$GOOS_$GOARCH" \
+          -ldflags="-X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
+          .
       - name: Build For Windows
+        env:
+          GOOS: windows
+          GOARCH: amd64
         run: |
-          GOOS="windows" GOARCH="amd64" \
-            go build -v -o "dihdah-${GOOS}_${GOARCH}.exe" \
-            -ldflags="-X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
-            .
+          go build -o "dihdah-${GOOS}_${GOARCH}.exe" \
+          -ldflags="-X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
+          .
       - name: Release to Github
         uses: softprops/action-gh-release@v2
         with:
