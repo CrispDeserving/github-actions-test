@@ -6,6 +6,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      VERSION_STRING: ${{ github.event.releases.tag_name }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Go
@@ -18,22 +20,23 @@ jobs:
           go get -u .
           go mod tidy
       - name: Build For Linux
-        strategy:
-          matrix:
-            arch: ["amd64"]
-            os: ["linux", "darwin", "macos"]
-        env:
-          VERSION_STRING: ${{ github.event.releases.tag_name }}
         run: |
-          GOARCH="${{ matrix.arch }}" GOOS="${{ matrix.os }}" \
+          GOARCH="amd64" GOOS="linux" \
             go build -v -o "dihdah-${GOOS}_${GOARCH}" \
             -ldflags="-X github.com/CrispDeserving/github-actions-test/cmd.versionString=${VERSION_STRING}" \
             .
-      - name: Rename Windows Binaries
+      - name: Build For Macos
         run: |
-          for f in *windows*; do \
-            mv "$f" '$(echo "$f" | sed s/$/.exe/)'; \
-          done
+          GOARCH="amd64" GOOS="darwin" \
+            go build -v -o "dihdah-${GOOS}_${GOARCH}" \
+            -ldflags="-X github.com/CrispDeserving/github-actions-test/cmd.versionString=${VERSION_STRING}" \
+            .
+      - name: Build For Windows
+        run: |
+          GOARCH="amd64" GOOS="windows" \
+            go build -v -o "dihdah-${GOOS}_${GOARCH}.exe" \
+            -ldflags="-X github.com/CrispDeserving/github-actions-test/cmd.versionString=${VERSION_STRING}" \
+            .
       - name: Release to Github
         uses: softprops/action-gh-release@v2
         permissions:
