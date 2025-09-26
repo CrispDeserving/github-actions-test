@@ -6,6 +6,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       VERSION_STRING: ${{ github.event.releases.tag_name }}
     steps:
@@ -39,8 +41,6 @@ jobs:
             .
       - name: Release to Github
         uses: softprops/action-gh-release@v2
-        permissions:
-          contents: write
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: true
