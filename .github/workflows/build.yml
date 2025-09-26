@@ -28,30 +28,33 @@ jobs:
           GOARCH: amd64
         run: |
           go build -o "dihdah-${GOOS}_${GOARCH}" \
-          -ldflags="-X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
+          -ldflags="-s -X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
           .
+          chmod +x "dihdah-${GOOS}_${GOARCH}"
       - name: Build For MacOS
         env:
           GOOS: darwin
           GOARCH: amd64
         run: |
-          go build -o "dihdah-$GOOS_$GOARCH" \
-          -ldflags="-X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
+          go build -o "dihdah-${GOOS}_${GOARCH}" \
+          -ldflags="-s -X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
           .
+          chmod +x "dihdah-${GOOS}_${GOARCH}"
       - name: Build For Windows
         env:
           GOOS: windows
           GOARCH: amd64
         run: |
           go build -o "dihdah-${GOOS}_${GOARCH}.exe" \
-          -ldflags="-X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
+          -ldflags="-s -X ${REPO_URL}/cmd.versionString=${VERSION_STRING}" \
           .
+          chmod +x "dihdah-${GOOS}_${GOARCH}"
       - name: Release to Github
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: true
           make_latest: true
-          name: Release ${{ github.event.release.tag_name }}
+          name: Release ${{ github.ref_name }}
           files: |
             dihdah-*
